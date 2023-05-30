@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %} Timetable {% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h1 class="text-center">{{sub.name}} Time table</h1>
+
+    <form>
+        {% csrf_token %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for slot in slots %}
+                    <th>{{slot.start_time}}-{{slot.end_time}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for day in days %}
+                <tr>
+                    <td>{{day.name}}</td>
+                    {% for slot in slots %}
+                    <td class="time-table-cell" data-day_id="{{day.id}}" data-slot_id="{{slot.id}}">
+                        <select class="form-select" name="subject" id="">
+                            <option value="" selected>None</option>
+                            {% for s in sub %}
+                            <option value="{{s.id}}">{{s.name}}({{s.subject_code}})</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <input type="submit" value="Save" class="btn btn-primary">
+    </form>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    all_table_cells = document.querySelectorAll('.time-table-cell');
+    time_table_form = document.querySelector('form');
+
+    time_table_form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        data = []
+        all_table_cells.forEach(cell => {
+            day_id = cell.dataset.day_id;
+            slot_id = cell.dataset.slot_id;
+            subject_id = cell.querySelector('select').value
+            data.push({
+                'day_id': day_id,
+                'slot_id': slot_id,
+                'subject_id': subject_id
+            })
+        });
+        form_data = new FormData();
+        form_data.append('data', JSON.stringify(data));
+
+        fetch('/time-table', {
+                method: 'post',
+                body: form_data
+            }).then(res => { 
+                    console.log(res)
+                    if(res.ok){
+                        location.href="/"
+                    }
+                    else{
+                        alert("Something went wrong")
+                    }
+                })
+    })
+</script>
+{% endblock %}

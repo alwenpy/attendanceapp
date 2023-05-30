@@ -4,18 +4,63 @@
 
 {% block body %}
 
-<h1>Hello student!</h1>
-{% if sub_list|length > 0 %}
-<ul>
-    <h1>Subject List</h1>
-    {% for sub in sub_list %}
-    <li>{{sub.name}} ({{sub.code}})</li>
-    {% endfor %}
-</ul>
-{% else %}
-No subjects added !
-{% endif %}
-
-<a href="/add-subject">Add Subject</a>
+<div class="container mt-5">
+    <div class="row border-bottom w-100 mb-5">
+        <div class="col-10">
+            <h1>Hello student!</h1>
+        </div>
+        <div class="col-2">
+            <a class="btn btn-light border" href="/time-table">Time Table</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 p-2">
+            <div class="px-3 bg-light bg-gradient rounded-4 shadow">
+                {% if sub_list|length > 0 %}
+                <ul class="list-group">
+                    <h3 class="h3 my-3">Subject List</h3>
+                    {% for sub in sub_list %}
+                    <li class="list-group-item">
+                        {{sub.name}} ({{sub.subject_code}}) 
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="pt-3">No subjects added !</p>
+                {% endif %}
+                <a class="btn btn-dark my-3" href="/add-subject">Add Subject</a>
+            </div>
+        </div>
+        <div class="col-8 p-2">
+            <div class="px-3 bg-white bg-gradient rounded-4 shadow">
+                <ul class="list-group">
+                    <h3 class="h3 my-3 mb-0 pb-0">Today's schedule</h3>
+                    <h5 class="text-muted lead">{{today}}</h5>
+                    {% if time_table|length > 0 %}
+                    <table class="table table-bordered">
+                        <tbody>
+                            {% for tt in time_table %}
+                            <tr>
+                                <td class="fw-bold">{{tt.time_slot.start_time}} - {{tt.time_slot.end_time}}</td>
+                                <td>
+                                    {% if tt.sid %}
+                                    {{tt.sid.name}} ({{tt.sid.subject_code}})
+                                    {% else %}
+                                    <span class="text-success">No class</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <h1 class=" text-center pt-3">No classes today !</p>
+                    {% endif %}
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

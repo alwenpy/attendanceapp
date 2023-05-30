@@ -30,6 +30,11 @@ class TimeSlot(models.Model):
     def __str__(self):
         return f"{self.start_time}"
 
+    @property
+    def end_time(self):
+        end = datetime.datetime.combine(datetime.date.today(), self.start_time) + self.duration
+        return end.time()
+
 class Day(models.Model):
     id=models.AutoField(primary_key=True)
     name = models.CharField(max_length=20)
@@ -43,6 +48,10 @@ class Timetable(models.Model):
     sid=models.ForeignKey(Subject, on_delete=models.CASCADE,null=True)
     day = models.ForeignKey(Day,on_delete=models.CASCADE,null=True)
     time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE,null=True)
+
+    @property
+    def student_id(self):
+        return self.sid.student.roll
 
     def __str__(self):
         return f"{self.sid}"

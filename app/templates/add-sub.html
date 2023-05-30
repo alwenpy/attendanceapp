@@ -5,6 +5,7 @@
 {% block body %}
 
 <form action="add-subject" method="post">
+    {% csrf_token %}
     <p>
         <label for="sub_name">Subject Name : </label>
         <input type="text" name="sub_name" id="sub_name">
