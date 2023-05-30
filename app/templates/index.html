@@ -22,6 +22,7 @@
                     {% for sub in sub_list %}
                     <li class="list-group-item">
                         {{sub.name}} ({{sub.subject_code}}) 
+                        <a href="/report/{{sub.id}}" class="btn btn-sm btn-primary py-0">Details</a>
                     </li>
                     {% endfor %}
                 </ul>
@@ -34,7 +35,13 @@
         <div class="col-8 p-2">
             <div class="px-3 bg-white bg-gradient rounded-4 shadow">
                 <ul class="list-group">
-                    <h3 class="h3 my-3 mb-0 pb-0">Today's schedule</h3>
+                    <div class="d-flex my-3 justify-content-between align-items-center">
+                        <h3 class="h3  mb-0 pb-0">Today's schedule</h3>
+                        {% if holiday_avl %}
+                        <a href="/holiday" class="btn btn-light border fw-bold fst-italic">Mark holiday</a>
+                        {% endif %}
+                    </div>
+                    
                     <h5 class="text-muted lead">{{today}}</h5>
                     {% if time_table|length > 0 %}
                     <table class="table table-bordered">
@@ -46,7 +53,27 @@
                                     {% if tt.sid %}
                                     {{tt.sid.name}} ({{tt.sid.subject_code}})
                                     {% else %}
-                                    <span class="text-success">No class</span>
+                                    <span class="badge bg-success">No class</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <td class="fs-5 text-center">
+                                    {% if tt.sid%}
+                                        {% if tt.marked %}
+                                            {% if tt.status.id == 1 %}    
+                                            <span class="badge bg-primary">
+                                            {% elif tt.status.id == 2 %}
+                                            <span class="badge bg-secondary">
+                                            {% elif tt.status.id == 3 %}
+                                            <span class="badge bg-danger">
+                                            {% endif %}
+                                                {{tt.status.status}}
+                                            </span>
+                                        {% else %}
+                                        <button data-tt_id="{{tt.id}}" data-status="1" class="status-btn rounded-4 btn btn-sm btn-primary">Present</button>
+                                        <button data-tt_id="{{tt.id}}" data-status="2" class="status-btn rounded-4 btn btn-sm btn-secondary">Absent</button>
+                                        <button data-tt_id="{{tt.id}}" data-status="3" class="status-btn rounded-4 btn btn-sm btn-danger">Mass Bunk</button>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -63,4 +90,22 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    all_status_btn = document.querySelectorAll('.status-btn');
+    all_status_btn.forEach(btn => btn.addEventListener('click', function(e){
+        fetch("/mark-attendance", {
+            method : 'POST',
+            body : JSON.stringify({
+                tt_id : e.target.dataset.tt_id,
+                status : e.target.dataset.status
+            })
+        }).then(res => {
+            if(res.ok)
+                window.location.reload();
+        })
+    }))
+</script>
 {% endblock %}

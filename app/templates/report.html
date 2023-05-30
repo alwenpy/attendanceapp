@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %} Report {% endblock %}
+{% block body %}
+
+<div class="container mt-3">
+    <h1>{{subject.name}} ({{subject.subject_code}})</h1>
+
+    <div class="row mt-5">
+        <h3>Time Table</h3>
+        <hr>
+        <ul class="list-group">
+            {% for tt in time_table %}
+            <li class="list-group-item">
+                <span class="fw-bold">{{tt.day.name}}</span> {{tt.time_slot.start_time}}-{{tt.time_slot.end_time}}
+            </li>
+            {% endfor %}
+        </table>
+    </div>
+    {% if total > 0 %}
+    <div class="row mt-3">
+        <div class="col-6 p-0 pe-1">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="fw-bold">Total classes</span> {{total}}
+                </li>
+                <li class="list-group-item">
+                    <span class="fw-bold">Attended</span> {{present}}
+                </li>
+                <li class="list-group-item">
+                    <span class="fw-bold">Didn't Attend</span> {{absent}}
+                </li>
+                <li class="list-group-item">
+                    <span class="fw-bold">Holiday+Bunk</span> {{holiday}}
+                </li>
+            </ul>
+        </div>
+        <div class="col-6 p-0 ps-1 pe-2">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="fw-bold">Percentage</span> {{percentage}}
+                </li>
+                <li class="list-group-item">
+                    <span class="fw-bold">To complete 60%, </span> {{to_60}}
+                </li>
+                <li class="list-group-item">
+                    <span class="fw-bold">To complete 75%, </span> {{to_75}}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <h3>Details</h3>
+        <hr>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in attendances %}
+                <tr>
+                    <td>
+                        {{a.date}}
+                    </td>
+                    <td>
+                        {{a.timetable.day.name}}
+                    </td>
+                    <td>
+                        {{a.timetable.time_slot.start_time}}-{{a.timetable.time_slot.end_time}}
+                    </td>
+                    <td>
+                        {% if a.status_id == 1 %}
+                        <span class="text-success">Present</span>
+                        {% elif a.status_id == 2 %}
+                        <span class="text-secondary">Absent</span>
+                        {% elif a.status_id == 3 %}
+                        <span class="text-danger">Holiday</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <h2 class=" mt-3 text-center">No classes until now !</h2>
+    {% endif %}
+</div>
+
+{% endblock %}
+

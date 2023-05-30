@@ -4,19 +4,28 @@
 
 {% block body %}
 
-<form action="add-subject" method="post">
-    {% csrf_token %}
-    <p>
-        <label for="sub_name">Subject Name : </label>
-        <input type="text" name="sub_name" id="sub_name">
-    </p>
-    <p>
-        <label for="sub_code">Subject Code : </label>
-        <input type="text" name="sub_code" id="sub_code">
-    </p>
-    <p>
-        <input type="submit" value="Add">
-    </p>
-</form>
+<div class="container">
+    <div class="row mt-3 justify-content-center">
+        <div class="col-4 pt-3 shadow rounded bg-light">
+            <form action="add-subject" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label" for="sub_name">Subject Name : </label>
+                    <input class="form-control" type="text" name="sub_name" id="sub_name">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="sub_code">Subject Code : </label>
+                    <input class="form-control" type="text" name="sub_code" id="sub_code">
+                </div>
+
+                <div class="mb-3">
+                    <input class="btn btn-light border" type="submit" value="Add">
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+
 
 {% endblock %}
