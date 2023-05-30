@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block body %}
+
+<h1>Hello student!</h1>
+{% if sub_list|length > 0 %}
+<ul>
+    <h1>Subject List</h1>
+    {% for sub in sub_list %}
+    <li>{{sub.name}} ({{sub.code}})</li>
+    {% endfor %}
+</ul>
+{% else %}
+No subjects added !
+{% endif %}
+
+<a href="/add-subject">Add Subject</a>
+
+{% endblock %}
